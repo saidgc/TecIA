@@ -1,7 +1,7 @@
 import time
 
-actual_temp = 0
-previous_temp = 1
+actual_temp = 1
+previous_temp = 2
 gas_percentage = 0
 fan = 0
 limit = 230
@@ -18,23 +18,26 @@ def temperature(previous_temp, gas_percentage, fan):
 if __name__ == "__main__":
     while True:
         actual_temp = temperature(previous_temp, gas_percentage, fan)
-        print(actual_temp)
+        print("gas = {0:2.0f} fan = {1:1.2f} temp = {2:3.0f}".format(
+            gas_percentage, fan, actual_temp))
         previous_temp = actual_temp
         if learning:
             difference = temperature(0, 2, 0) - temperature(0, 1, 0)
-            punto_a = limit - temperature(0, 1, 0)
-            n = punto_a
-            punto_b = 1
-            while n >= 0:
-                punto_b += 1
+            point_a = limit - temperature(0, 1, 0)
+            n = point_a
+            point_b = 1
+            while n >= 0: 
+                point_b += 1
                 n -= difference
             learning = False
-            coeff = (0 - punto_a) / (punto_b - 2)
+            coeff = (0 - point_a) / (point_b - 2)
         else:
-            if actual_temp < limit:
-                gas_percentage = (actual_temp - punto_a) / coeff + 1
+            if actual_temp < limit + 2:
+                gas_percentage = round((actual_temp - point_a) / coeff + 1, 0)
+                if gas_percentage > 100:
+                    gas_percentage = 100
                 fan = 0
             else:
                 gas_percentage = 0
-                fan = 1
+                fan = .2
         time.sleep(1)
